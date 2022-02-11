@@ -2,7 +2,7 @@
 # Time Series Forecasting #
 ###########################
 
-# Zaman Serisine Giriş ve Temel Kavramlar
+# Introduction to Time Series and Basic Concepts
 
 # Smoothing Methods
 #   Single Exponential Smoothing (a)
@@ -18,79 +18,75 @@
 
 ###################################################################################################################
 
-# Zaman Serisi Nedir?
+# What is Time Series?
 
-# Zaman serisi, zamana göre gözlem değerlerinden oluşan verilerdir.
+# A time series is data that consists of observation values over time.
 
-# 1. Stationary (Durağanlık)
+# 1. Stationary
 # 2. Trend
-# 3. Seasonality (Mevsimsellik)
-# 4. Cycle (Döngüsel)
+# 3. Seasonality 
+# 4. Cycle 
 
-##############################
-# 1. Stationary (Durağanlık) #
-##############################
+#################
+# 1. Stationary #
+#################
 
-# Durağanlık, serinin istatistiksel özelliklerinin zaman içerisinde değişmemesidir.
-# Bir zaman serisinin ortalaması, varyansı ve kovaryansı zaman boyunca sabit kalıyorsa,
-# serinin durağan olduğu kabul edilir. Serinin istatistiki özellikleri gelecekte ciddi
-# şekilde farklılaşmayacaksa bu durumda tahmin yapmak daha kolaydır, varsayımı vardır.
-# Durağanlık sağlanmıyorsa tahmin başarısı düşecek modele güven azalacaktır, varsayımı vardır.
-
+# Stationarity is the statistical properties of the series that do not change over time.
+# A time series is considered stationary if its mean, variance, and covariance remain constant over time. 
+# There is an assumption that if the statistical properties of the series will not differ significantly in the future, 
+# then it is easier to predict.
+# If stationarity is not ensured, there is an assumption that the prediction success will decrease and the confidence in the model will decrease.
 ##############################
 # 2. Trend                   #
 ##############################
 
-# Bir zaman serisinin uzun vadedeki artış ya da azalışının gösterdiği yapıya trend denir.
-# Trend varsa bu durumda durağanlık yoktur diye düşünebiliriz.
+# The structure in which a time series increases or decreases in the long run is called a trend.
+# If there is a trend, we can think that there is no stationarity in this case.
 
 #################################
-# 3. Seasonality (Mevsimsellik) #
+# 3. Seasonality                #
 #################################
 
-# Zaman serisinin belirli bir davranışı belirli periyotlarla tekrar etmesi durumuna mevsimsellik denir.
+# Seasonality is when a time series repeats a certain behavior at certain intervals.
 
 ##############################
 # 4. Cycle                   #
 ##############################
 
-# Döngüsellik, tekrar eden düzenler barındırır. Mevsimsellik daha belirgin kısa vadeli, gün ,hafta ,yıl,
-# mevsim gibi zamanlarla örtüşecek şekilde gelişir iken, döngüsellik ise daha uzun vadeli belirsiz bir
-# yapıda gün, hafta, yıl, mevsim gibi yapılarla örtüşmeyecek şekilde gerçekleşir. Daha çok yapısal, nedensel
-# konjonktürel değişimlerle ortaya çıkar. Örnek olarak, iş dünyasındaki, politika dünyasındaki değişimler, vb.
+# Circularity contains repetitive patterns. While seasonality develops in a way that overlaps with more obvious short-term times such as day, week, year, 
+# season, cyclicity occurs in a longer-term indefinite structure and does not overlap with structures such as day, week, year, season. 
+# It mostly occurs with structural, causal cyclical changes. For example, changes in business, politics, etc.
 
 
-##############################################
-# Zaman Serisi Modellerinin Doğasını Anlamak #
-##############################################
+##################################################
+# Understanding the Nature of Time Series Models #
+##################################################
 
 ##############################################
 # Moving Average                             #
 ##############################################
 
-# Bir zaman serisinin gelecek değeri kendisinin k adet önceki değerinin ortalamasıdır.
-# Bugünü en iyi dün ile tahmin edebilirsiniz.
+# The future value of a time series is the average of its k previous values. You can best predict today with yesterday.
 
 ##############################################
 # Weighted Average                           #
 ##############################################
 
-# Ağırlıklı ortalama hareketli ortalamaya benzer. Daha sonlarda olan gözlemlere daha fazla ağırlık
-# verme fikrini taşır.
+# The weighted average is similar to the moving average. It carries the idea of giving more weight to later observations.
 
 ##############################################
 # Smoothing Yöntemleri                       #
 ##############################################
 
-# Single Exponential Smoothing (SES) (Sadece durağan serilerde. Trend ve mevsimsellik olmamalı)
-#   Üssel düzeltme yaparak tahminde bulunur.
-#   Gelecek yakın geçmişle daha fazla ilişkilidir varsayımıyla geçmişin etkileri ağırlıklandırılır.
-#   Geçmiş gerçek değerler ve geçmiş tahmin edilen değerlerin üssel olarak ağırlıklandırılmasıyla tahmin yapılır.
-#   Trend ve mevsimsellik içermeyen tek değişkenli zaman serileri için uygundur.
+# Single Exponential Smoothing (SES) (Only in stationary series. No trend and seasonality)
+#   Makes predictions by exponentially correcting.
+#   The effects of the past are weighted assuming that the future is more related to the recent past.
+#   Estimates are made by exponentially weighting the past actual values and past estimated values.
+#   It is suitable for univariate time series without trend and seasonality.
 
-# Double Exponenetial Smoothing (Level + Trend. Mevsimsellik olmamalı.)
+# Double Exponenetial Smoothing (Level + Trend. There should be no seasonality.)
 
-# Triple Exponential Smoothing a.k.a. Holt-Winters (Level + Trend + Mevsimsellik)
+# Triple Exponential Smoothing a.k.a. Holt-Winters (Level + Trend + Seasonality)
 
 import itertools
 import warnings
@@ -107,62 +103,64 @@ import statsmodels.tsa.api as smt
 from statsmodels.tsa.statespace.sarimax import SARIMAX
 warnings.filterwarnings("ignore")
 
-# Bu veri seti 1958 ile 2001 yılları arasında A.B.D Hawaii'de toplanmıştır.
-# Atmosferdeki CO2 ile ilgili bir veri setidir.
-# Yıllara göre bir zaman serisi veri setidir. Amacımız gelecek yıllara göre
-# CO2 miktarının ne olabileceği ile ilgili tahminde bulunmak.
+# This dataset was collected from 1958 to 2001 in Hawaii, USA.
+# It is a data set about CO2 in the atmosphere.
+# It is a time series data set by years. Our aim for the coming years
+# Estimate what the amount of CO2 might be.
+
 data = sm.datasets.co2.load_pandas()
 y = data.data
 y.index.sort_values()
 
-# Bu veri setinde 2284 tane gözlem birimi vardır.
-# Bu veri seti haftalıktır ve cumartesi günleri kayıtlar tutulmuştur.
-# Bu veri setinin periyodunu aylık periyota çevireceğiz.
+# There are 2284 observation units in this data set.
+# This data set is weekly and records are kept on Saturdays.
+# We will convert the period of this dataset to monthly period.
 
 y = y['co2'].resample('MS').mean()
 y
 
 y.isnull().sum()
-# Veri setine baktığımızda 5 tane eksik değer var.
-
-# Zaman serisi verilerinde ortalamayı kullanarak eksik değerleri doldurmak çok mantıklı değildir.
-# Genel olarak eksik değerler kendisinden önceki veya sonraki değerle doldurulursa daha mantıklı olmaktadır.
-# Çünkü içerisinde mevsillellik ve trend bileşeni olabilir.
+# When we look at the data set, there are 5 missing values.
+# It doesn't make much sense to fill in missing values using the mean in time series data.
+# In general, it makes more sense if the missing values are filled with the value before or after them.
+# Because it may contain seasonal and trend components.
 
 y = y.fillna(y.bfill())
 y.head()
 
-# Seriyi görselleştiriyoruz.
+# We visualize the series.
 y.plot(figsize=(15, 6))
 plt.show()
 
-# 1959'dan 2001'e kadar bir artış gözükmektedir. Bu seride artış trendi ve mevsimsellik vardır.
+# There appears to be an increase from 1959 to 2001. There is an increasing trend and seasonality in this series.
 
 ###################
-# Holdout Yöntemi #
+# Holdout Method #
 ###################
 
-# Burada train test ile holdout yöntemi uygulayacağız.
-# 1958'den 1997 sonuna kadar bir train seti oluşturalım.
+# Here we will apply holdout method with train test.
+# Let's create a train set from 1958 to the end of 1997.
 
 train = y[:'1997-12-01']
 len(train)
-# Haftalık periyottaki gözlem birimlerini aylık periyoda çevirdiğimiz için gözlem birimlerine baktığımızda
-# 478 tane gözlem birimi yani 478 ay vardır.
 
-# 1998'in ilk ayından 2001'in sonuna kadar test seti oluşturalım.
+# When we look at the observation units, since we have converted the weekly period observation units to the monthly period
+# There are 478 observation units, that is, 478 moons.
+
+# Let's create a test set from the first month of 1998 to the end of 2001.
 
 test = y['1998-01-01':]
 len(test)
-# Test setinde 48 gözlem birimi yani 48 ay vardır.
 
-# 478 ay üzerinden model kurup 48 ay içerisinden bu modeli test edeceğiz.
+# There are 48 observation units, ie 48 months, in the test set.
 
-################################
-# Zaman Serisi Yapısal Analizi #
-################################
+# We will build a model over 478 months and test this model within 48 months.
 
-# Durağanlık Testi (Dickey-Fuller Testi)
+###################################
+# Time Series Structural Analysis #
+###################################
+
+# Stationarity Test (Dickey-Fuller Test)
 
 def is_stationary(y):
     # "H0: Non-stationary"
@@ -173,8 +171,8 @@ def is_stationary(y):
     else:
         print(F"Result: Non-stationary (H0: non-stationary, p-value: {round(p_value, 3)})")
 
-
-# Zaman Serisi Bileşenleri ve Durağanlık Testi
+        
+# Time Series Components and Stationarity Test
 def ts_decompose(y, model="additive", stationary=False):
     result = seasonal_decompose(y, model=model)
     fig, axes = plt.subplots(4, 1, sharex=True, sharey=False)
@@ -198,64 +196,62 @@ def ts_decompose(y, model="additive", stationary=False):
     if stationary:
         is_stationary(y)
 
-# Burada modelimiz toplamsal veya çarpımsal olabilir. Toplamsal modelin artıkları birbirinden bağımsız iken,
-# çarpımsal modelin artıkları birbirine bağımlı olur.
+# Here our model can be additive or multiplicative. While the residuals of the additive model are independent of each other, 
+# the residuals of the multiplicative model are dependent on each other.
 
 for model in ["additive", "multiplicative"]:
     ts_decompose(y, model, stationary=False)
 
-# Yapılan decompose işlemi zaman serilerini bileşenlerine ayırır. Bu bileşenlerden
-# biri level bileşenidir yani ortalamadır. Grafiğin en üstündeki kısımdaki level bileşenini
-# single exponential smoothing modelliyordu. 2. kısım trend bölümü, 3. kısım mevsimsellik
-# bölümüdür. 4. bölüm ise modelin artıklarıdır. 4. kısımda modelin artıkları 0'ın etrafında
-# toplanmaktadır. Diğer grafikte ise model 1'in etrafında toplanmaktadır. Bu da modelin
-# çarpımsal olamayacağı ile ilgili bir görüş belirtebiliriz.
+# The decompose operation separates the time series into its components. One of these components is the level component, that is, the average.
+# Single exponential smoothing was modeling the level component at the top of the graph. Part 2 is the trend part, part 3 is the seasonality part.
+# The 4th part is the residuals of the model. In part 4, the residuals of the model are gathered around 0.
+# In the other graph, it gathers around model 1. Thus, we can state an opinion that the model cannot be multiplicative.
 
 for model in ["additive", "multiplicative"]:
     ts_decompose(y, model, stationary=True)
 # Result: Non-stationary (H0: non-stationary, p-value: 0.999)
 # Result: Non-stationary (H0: non-stationary, p-value: 0.999)
 
-# H0 hipotezini reddedemiyoruz. Serimiz durağan değildir. Çünkü H0 hipotezi 0.05'ten küçük değildir.
+# We cannot reject the H0 hypothesis. Our series is not stationary. Because the H0 hypothesis is not less than 0.05.
 
 ################################
 # Single Exponential Smoothing #
 ################################
 
-# SES Level'i modelleri ve durağan serilerde kullanılır ama bu veri setimizi incelediğimizde durağanlık gözükmüyor.
-# Trend ve mevsimsellik varsa kullanılmaz. # Kullanılabilir ama istenilen sonucu vermez.
-# Mevsimsellik ve artık bileşenleri trend'den bağımsız ise seri toplamsal bir seridir.
-# Mevsimsellik ve artık bieleşenleri trend'e göre şekilleniyorsa yani bağımlıysa bu seri çarpımsal bir seridir.
+# SES Level is used in models and stationary series, but when we examine this data set, it does not seem stationary.
+# Not used if there are trends and seasonality. # It can be used but does not give the desired result.
+# If the seasonality and residual components are independent of trend, the series is additive.
+# If seasonality and residual components are shaped according to trend, that is, if it is dependent, this series is a multiplicative series.
 
 # y(t) = Level + Trend + Seasonality + Noise
 # y(t) = Level * Trend * Seasonality * Noise
 
 ses_model = SimpleExpSmoothing(train).fit(smoothing_level=0.5)
-# "smoothing_level" alfa düzenleştirme parametresidir.
-# SES yönteminin smoothing_level parametresi normalde maksimum olabilirlik yöntemiyle en uygun değeri bulacak
-# şekilde çalışmaktadır.
+
+# "smoothing_level" is alpha editing parameter.
+# The smoothing_level parameter of the SES method normally works to find the most appropriate value with the maximum likelihood method.
 
 y_pred = ses_model.forecast(48)
-# Modeli kullanarak tahmin işlemi yaptık. 48 rakamı test setindeki ay sayısını belirtmektedir.
+
+# We made predictions using the model. The number 48 indicates the number of months in the test set.
 
 mean_absolute_error(test, y_pred)
 
-# Görsel olarak modelin tahmin başarısına bakıyoruz.
+# We visually look at the predictive success of the model.
 
 train.plot(title="Single Exponential Smoothing")
 test.plot()
 y_pred.plot()
 plt.show()
 
-# Görseli yakınlaştırırsak;
+# If we zoom the image;
 
 train["1985":].plot(title="Single Exponential Smoothing")
 test.plot()
 y_pred.plot()
 plt.show()
 
-# Görsel ve numerik başarıyı bir arada göstermek için aşağıdaki fonksiyonu kullanıyoruz. Bu fonksiyon bu
-# probleme özel bir fonksiyondur.
+# We use the following function to show visual and numerical success together. This function is a special function for this problem.
 
 def plot_co2(train, test, y_pred, title):
     mae = mean_absolute_error(test, y_pred)
@@ -298,7 +294,7 @@ def ses_optimizer(train, alphas, step=48):
     return best_alpha, best_mae
 
 alphas = np.arange(0.8, 1, 0.01)
-# alfa değerimiz 0.8'den 1'e kadar 0.01 artarak gitsin diyoruz.
+# We say let our alpha value go from 0.8 to 1, increasing by 0.01.
 
 ses_optimizer(train, alphas)
 # alpha: 0.8 mae: 4.953
@@ -323,9 +319,9 @@ ses_optimizer(train, alphas)
 # alpha: 0.99 mae: 4.5451
 # best_alpha: 0.99 best_mae: 4.5451
 
-# ses_optimizer fonksiyonu verdiğimiz alfa değerlerini teker teker SES formülünde yerine koydu ve çıktıları önümüze getirdi.
+# The "sound_optimizer" function put the alpha values we gave one by one into the SES formula and brought the outputs to us.
 
-# Daha önce best_mae 5.71'den 4.54'e düştü.
+# Previously best_mae dropped from 5.71 to 4.54.
 
 best_alpha, best_mae = ses_optimizer(train, alphas)
 
@@ -343,12 +339,11 @@ mean_absolute_error(test, y_pred)
 # Double Exponential Smoothing (DES) #
 ######################################
 
-# Double Exponential Smoothing, trend etkisini göz önünde bulundurarak üssel düzeltme yapar.
-# Level yani t zamanının ortalamasını elde etmek için geçmiş gerçek değer, geçmiş level bilgisi artı
-# geçmiş trend bilgisini elde ediyoruz.
+# Double Exponential Smoothing makes exponential smoothing by considering the trend effect.
+# We get the past true value, the past level information plus the past trend information to get the average of the level, ie time t.
 # DES = Level (SES) + Trend
-# Temel yaklaşım aynıdır. Single Exponential Smoothing'e ek olarak trend de dikkate alınır.
-# Trend içeren ve mevsimsellik içermeyen tek değişkenli zaman serileri için uygundur.
+# The basic approach is the same. In addition to Single Exponential Smoothing, the trend is also taken into account.
+# It is suitable for univariate time series with and without seasonality.
 
 des_model = ExponentialSmoothing(train, trend="add").fit(smoothing_level=0.5, smoothing_trend=0.5)
 
@@ -390,7 +385,8 @@ alphas = np.arange(0.01, 1, 0.10)
 betas = np.arange(0.01, 1, 0.10)
 
 best_alpha, best_beta, best_mae = des_optimizer(train, alphas, betas)
-# Optimize etmeden önce modelin başarısı 5.75 iken optimize ettikten sonraki modelin başarısı 1.74'e kadar düşmüştür.
+
+# While the success of the model before optimizing was 5.75, the success of the model after optimizing decreased to 1.74.
 
 ###################
 # Final DES Model #
@@ -406,18 +402,18 @@ plot_co2(train, test, y_pred, "Double Exponential Smoothing")
 # * Triple Exponential Smoothing a.k.a. Holt-Winters (TES) * #
 ##############################################################
 
-# Triple exponential smoothing a.k.a. Holt-Winters yöntemi LEVEL(SES)'i, Trend'i ve Mevsimselliği modellemektedir.
-# Triple exponential smoothing en gelişmiş smoothing yöntemidir.
-# Bu yöntem dinamik olarak level, trend ve mevsimsellik etkilerini değerlendirerek tahmin yapmaktadır.
-# Trend ve/veya mevsimsellik içeren tek değişkenli serilerde kullanılabilir.
+# Triple exponential smoothing a.k.a. Holt-Winters method models LEVEL(SES), Trend and Seasonality.
+# Triple exponential smoothing is the most advanced smoothing method.
+# This method makes predictions by evaluating the effects of level, trend and seasonality dynamically.
+# It can be used in univariate series with trend and/or seasonality.
 
-# alfa level bileşeninin smoothing faktörüdür.
-# beta trend bileşeninin smoothing faktörüdür.
-# gama mevsimsellik bileşeninin smoothing faktörüdür.
+# is the smoothing factor of the alpha level component.
+# is the smoothing factor of the beta trend component.
+# gamma is the smoothing factor of the seasonality component.
 
 tes_model = ExponentialSmoothing(train, trend="add", seasonal="add", seasonal_periods=12).fit(smoothing_level=0.5, smoothing_slope=0.5, smoothing_seasonal=0.5)
 
-# Mevsimsellik periyodunu 12 ayda bir olacak şekilde ayarladık.
+# We set the seasonality period to be every 12 months.
 
 y_pred = tes_model.forecast(48)
 
@@ -449,7 +445,7 @@ def tes_optimizer(train, abg, step=48):
 
 best_alpha, best_beta, best_gamma, best_mae = tes_optimizer(train, abg)
 
-# Daha önceki hatamız 4.66 iken şimdi ise 0.53'e düştü.
+# Our previous error was 4.66, now it's down to 0.53.
 
 
 ###################
@@ -475,93 +471,93 @@ plot_co2(train, test, y_pred, "Triple Exponential Smoothing")
 
 # * AR(p): Autoregression * #
 
-# p burada modelin derecesini ifade eder. modele gecikme koyup koymamayla ilgili bir argümandır. Geçmiş gerçek
-# değerleri ifade eder.
-# Önceki zaman adımlarındaki gözlemlerin doğrusal bir kombinasyonu ile tahmin işlemi yapılır.
-# Trend ve mevsimsellik içermeyen tek değişkenli zaman serileri için uygundur.
-# p: zaman gecikme sayısıdır. p = 1 ise bir önceki zaman adımı ile model kurulmuş demektir.
-
+# p here denotes the degree of the pattern. is an argument about whether to put a delay in the model or not. It refers to past real values.
+# Estimation is done with a linear combination of observations from previous time steps.
+# It is suitable for univariate time series without trend and seasonality.
+# p: is the time delay number. If p = 1, it means that the model was established with the previous time step.
 
 
 
 # * MA(q): Moving Average * #
 
-# q değeri geçmiş hataları barındırır. Kaç periyot hatayı göz önünde bulunduracağımızın
-# sayısını belirlemek için kullanırız.
-# Önceki zaman adımlarında elde edilen hataların doğrusal bir kombinasyonu ile tahmin yapılır.
-# Trend ve mevsimsellik içermeyen tek değişkenli zaman serileri için uygundur.
-# q: zaman gecikmesi sayısıdır.
+# The q value contains past errors. We use it to determine the number of periods of error to consider.
+# Prediction is made with a linear combination of errors obtained in previous time steps.
+# It is suitable for univariate time series without trend and seasonality.
+# q: is the time delay number.
 
 
 
 # * ARMA(p, q) = AR(p) + MA(q) * #
 
-# AutoRegressive Moving Average, AR ve MA yöntemlerini birleştirir.
-# Geçmiş değerler ve geçmiş hataların doğrusal bir kombinasyonu ile tahmin yapılır.
-# Trend ve mevsimsellik içermeyen tek değişkenli zaman serileri için uygundur.
-# p ve q zaman gecikmesi sayılarıdır. p AR modeli için q MA modeli için kullanılır.
-
+# AutoRegressive Moving Average combines AR and MA methods.
+# Prediction is made with a linear combination of past values and past errors.
+# It is suitable for univariate time series without trend and seasonality.
+# p and q are time delay numbers. p is used for the AR model and q is used for the MA model.
 
 
 # * ARIMA(p, d, q) * #
 # (Autoregressive Integrated Moving Average)
 
-# Önceki zaman adımlarındaki farkı alınmış gözlemlerin ve hataların doğrusal bir kombinasyonu ile tahmin yapılır.
-# Tek değişkenli, tendi olan fakat mevsimselliği olmayan veriler için uygundur.
-# p: gerçek değer gecikme sayısı (otoregresif derece) p = 2 ise yt-1 ve yt-2 modeldedir.
-# d: fark işlemi sayısı (fark derecesi, I)
-# q: hata gecikme sayısıdır. (hareketli ortalama derecesi)
+# Estimate is made by a linear combination of differenced observations and errors from previous time steps.
+# Suitable for univariate data with a trend but no seasonality.
+# p: actual value delay number (autoregressive degree) If p = 2, yt-1 and yt-2 are in the model.
+# d: number of difference operations (difference degree, I)
+# q: is the error delay number. (moving average rating)
 
 
 
 # * SARIMA(p, d, q)(P, D, Q)m * #
 # (Seasonal Autoregressive Integrated Moving-Average)
 
-# SARIMA = ARIMA + mevsimselliktir.
-# Trend ve/veya mevsimsellik içeren tek değişkenli serilerde kullanılabilir.
-# p, d, q ARIMA'dan gelen parametreler, Trend elemanlarıdır. ARIMA trend'i modelleyebilmektedir.
-# p: gerçek değer gecikme sayısı (otoregresif derece)
-# p = 2 ise yt-1 ve yt-2 modeldedir.
-# d: fark işlemi sayısıdır (fark derecesi).
-# q: hata gecikme sayısı. (hareketli ortalama derecesi)
-# q=2 ise et-1 ve et-2 modeldedir.
-# P, D, Q mevsimsel gecikme sayılarıdır. Season elemanlarıdır.
-# m tek bir mevsimsellik dönemi için zaman adımı sayısıdır. Mevsimselliğin görülme yapısını ifade eder.
+# SARIMA = ARIMA + seasonality.
+# It can be used in univariate series with trend and/or seasonality.
+# p, d, q Parameters from ARIMA are Trend elements. ARIMA can model trend.
+# p: actual value delay number (autoregressive degree)
+# If p = 2, yt-1 and yt-2 are in the model.
+# d: number of difference operations (degree of difference).
+# q: number of error delays. (moving average rating)
+# If q=2, et-1 and et-2 are in the model.
+# P, D, Q are seasonal lag numbers. Season elements.
+# m is the number of time steps for a single seasonality period. Expresses the structure of seeing seasonality.
 
-
-# Bir seri Durağan ise; SES, AR, MA, ARMA modellerini kullanıyoruz.
-# Bir seri Trend ise; DES, ARIMA, SARIMA modellerini kullanıyoruz.
-# Bir seride Trend ve Mevsimsellik varsa TES, SARIMA modellerini kullanıyoruz.
+# If a series is Stationary; We use SES, AR, MA, ARMA models.
+# If a series is Trend; We use DES, ARIMA, SARIMA models.
+# If there is Trend and Seasonality in a series, we use TES, SARIMA models.
 
 
 ##############################################################
 # ARIMA(p, d, q): (Autoregressive Integrated Moving Average) #
 ##############################################################
+
 arima_model = sm.tsa.arima.ARIMA(train, order=(1,1,1))
-# Model deerecelerini bilmiyoruz. Geçmiş, gelecek değer sayısını 1, fark alma işlemini 1, hata artıklarını modelde
-# argümanını da 1 olarak giriyoruz.
+
+# We don't know the model grades. We enter the number of past and future values as 1, take the difference as 1, and error residuals as 1 in the model.
+
 arima_model = arima_model.fit()
 print(arima_model.summary())
 y_pred = arima_model.forecast(48)[0]
-# 48 birimlik tahmin yaptırdığımız için 48 argümanını giriyoruz. İstediğimiz değer de 0. index'te olduğu için
-# 0'ı alıyoruz.
+
+# Since we have a 48 unit guess, we enter the argument 48. Since the value we want is in 0. index, we get 0.
+
 y_pred = pd.Series(y_pred, index=test.index)
 plot_co2(train, test, y_pred, "ARIMA")
 
-# Modelimiz, trend'i ve level'i yakaladı ama mevsimselliği yakalayamadı.
+# Our model caught the trend and level, but not seasonality.
+
 
 ##############################################################
-# Hyperparameter Optimization (Model Derecelerini Belirleme) #
+# Hyperparameter Optimization (Determining Model Grades) #
 ##############################################################
 
-# 1. AIC İstatistiğine Göre Model Derecesini Belirleme
-# 2. ACF & PACF Grafiklerine Göre Model Derecesini Belirleme
+#1. Determining Model Grade Based on AIC Statistics
+#2. Determining Model Grade Based on ACF & PACF Charts
 
 ##############################################################
-# AIC & BIC İstatistiklerine Göre Model Derecesini Belirleme #
+# Determining Model Grade Based on AIC and BIC Statistics #
 ##############################################################
 
-# p ve qq kombinasyonlarının üretilmesi
+# Generating p and q combinations
+
 p = d = q = range(0, 4)
 pdq = list(itertools.product(p, d, q))
 
@@ -596,8 +592,8 @@ plot_co2(train, test, y_pred, "ARIMA")
 model = SARIMAX(train, order=(1, 0, 1), seasonal_order=(0, 0, 0, 12))
 sarima_model = model.fit(disp=0)
 
-# order argümanı ARIMA'dan gelen trend bileşenleridir.
-# seasonal_ order argümanı mevsimsellik bileşeni ile ilgili model dereceleridir. Mevsimsellik periyodumuz 12.
+# The "order" argument is the trend components from ARIMA.
+# The "seasonal_order" argument is the model degrees related to the seasonality component. Our seasonality period is 12.
 
 y_pred_test = sarima_model.get_forecast(steps=48)
 
@@ -648,7 +644,7 @@ y_pred = pd.Series(y_pred, index=test.index)
 plot_co2(train, test, y_pred, "SARIMA")
 
 ##################################################
-# BONUS: MAE'ye Göre SARIMA Optimizasyonu
+# SARIMA Optimization by MAE                     #
 ##################################################
 
 p = d = q = range(0, 2)
@@ -680,7 +676,7 @@ best_order, best_seasonal_order = sarima_optimizer_mae(train, pdq, seasonal_pdq)
 
 
 ##################################################
-# Modelin İstatistiksel Çıktılarının İncelenmesi #
+# Examining the Statistical Outputs of the Model #
 ##################################################
 sarima_final_model.plot_diagnostics(figsize=(15, 12))
 plt.show()
@@ -696,41 +692,38 @@ y_pred_test = sarima_final_model.get_forecast(steps=1)
 y_pred = y_pred_test.predicted_mean
 
 ##################################################
-# Modelin İstatistiksel Çıktılarının İncelenmesi #
+# Examining the Statistical Outputs of the Model #
 ##################################################
 
-# Geleneksel yöntemlerde zaman serisi modeli kurulması için gerekli varsayımlar vardır.
-# Bunlar;
-# Kalıntıların arasında otokorelasyon olmamalıdır.
-# Kalıntıların ortalaması sıfır olmalıdır.
-# Kalıntıların varyansı sabit olmalıdır.
-# Kalıntılar normal dağılmalıdır.
+# In traditional methods, there are necessary assumptions for establishing a time series model.
+# These;
+# There should be no autocorrelation between the residuals.
+# The mean of the residuals must be zero.
+# The variance of the residuals must be constant.
+# Residues should be normally distributed.
 
-# Bu varsayımlar arasında en önemli kabul edilebilecek olanı aslında model artıklarının yani hatalarının
-# sıfır ortalama ile normal dağılıp dağılmamasıdır.
+# Among these assumptions, the most important one is whether the model residuals, namely errors, are normally distributed with a zero mean.
 
 sarima_final_model.plot_diagnostics(figsize=(15, 12))
 plt.show()
 
-# Sağ üst köşedeki grafik, bizim tahmin artıklarımızın ve standart normal dağılımın uyumlu olup olmadığını göstermektedir.
-# Teorik standart normal dağılım ile artıklarımız üst üste gelmiştir.
+# The graph in the upper right corner shows whether our prediction residuals and the standard normal distribution are compatible.
+# Our residuals overlapped with the theoretical standard normal distribution.
 
-# Sol alt köşedeki grafiğimiz, teorik normal standart dağılım ile bizim dağılımımızın uyumlu olup
-# olmadığını göstermektedir.
+# Our graph in the lower left corner shows whether our distribution is compatible with the theoretical normal standard distribution.
 
-# Sol üst köşedeki grafiğe baktığımızda, artıklarda trend ve belirgin bir mevsimsellik kalmadığını göstermektedir.
-# 0'ın etrafında rastgele dağılmaktadır.
+# When we look at the graph in the upper left corner, it shows that there is no trend and no obvious seasonality in the residuals. 
+# It is randomly distributed around 0.
 
-# Sağ alttaki grafikte gecikmelerdeki otokorelasyonu ifade ediyor. Gecikmelerde de bir korelasyon
-# gözükmemektedir.
+# Indicates the autocorrelation in delays in the lower right graph. There is no correlation in delays either.
 
 ####################################
 # * DEMAND FORECASTING CHALLENGE * #
 ####################################
 
-# Farklı store için 3 aylık item-level sales tahmini,
-# 5 yıllık bir veri setinde 10 farklı mağaza ve 50 farklı item var.
-# Buna göre mağaza-item kırılımında 3 ay sonrasının tahminlerini vermemiz gerekiyor.
+# 3-month item-level sales forecast for different store,
+# There are 10 different stores and 50 different items in a 5-year dataset.
+# Accordingly, we need to give forecasts for 3 months after the store-item breakdown.
 
 import itertools
 import warnings
@@ -772,7 +765,8 @@ def check_df(dataframe, head=5):
 df = pd.read_csv("/Users/cenancanbikmaz/PycharmProjects/DSMLBC-7/HAFTA_9/datasets/airline-passengers.csv", index_col='month', parse_dates=True)
 
 df.shape
-# Veri setinde 144 tane gözlem birimi var.
+
+# There are 144 observation units in the data set.
 
 df.head()
 
@@ -786,13 +780,16 @@ df[['total_passengers']].plot(title='Passengers Data')
 plt.show()
 
 df.index.freq = "MS"
-# Bu veri seti aylara göre düzenlenmiştir. Bu veri setinin aylık periyotta olduğunun bilgisini belirtmemiz gerekmektedir.
+
+# This data set is organized by month. We need to indicate that this data set is in a monthly period.
 
 train = df[:120]
-# 120 gözlemi train seti olarak ayırıyoruz.
+
+# We separate 120 observations as a train set.
 
 test = df[120:]
-# 24 gözlemi test seti olarak ayırıyoruz.
+
+# We separate the 24 observations as the test set.
 
 ################################
 # Single Exponential Smoothing #
@@ -830,7 +827,8 @@ def plot_prediction(y_pred, label):
     plt.show()
 
 plot_prediction(y_pred, "Single Exponential Smoothing")
-# Bu seride trend ve mevsimsellik var. SES modeli bu veri setini iyi yakalayamadı.
+
+# There is trend and seasonality in this series. The SES model did not capture this dataset well.
 
 ################################
 # Double Exponential Smoothing #
@@ -861,7 +859,8 @@ des_model = ExponentialSmoothing(train, trend="add").fit(smoothing_level=best_al
 y_pred = des_model.forecast(24)
 
 plot_prediction(y_pred, "Double Exponential Smoothing")
-# Bu seride trend'i yakaladı ama mevsimselliği yakalayamadı.
+
+# In this series, it caught the trend, but not the seasonality.
 
 ################################
 # Triple Exponential Smoothing #
@@ -888,9 +887,10 @@ alphas = betas = gammas = np.arange(0.10, 1, 0.20)
 abg = list(itertools.product(alphas, betas, gammas))
 
 best_alpha, best_beta, best_gamma, best_mae = tes_optimizer(train, abg, step=24)
+
 # best_alpha: 0.3 best_beta: 0.3 best_gamma: 0.5 best_mae: 11.9947
-# Toplamsalın hatası 11.99
-# Çarpımsalın hatası 15.12
+# Error of additive       : 11.99
+# Error of multiplicative : 15.12
 
 tes_model = ExponentialSmoothing(train, trend="add", seasonal="add", seasonal_periods=12).\
             fit(smoothing_level=best_alpha, smoothing_slope=best_beta, smoothing_seasonal=best_gamma)
@@ -918,7 +918,7 @@ def arima_optimizer_aic(train, orders):
 
 best_params_aic = arima_optimizer_aic(train, pdq)
 
-# Tune Edilmiş Model
+# Tuned Model
 
 arima_model = sm.tsa.arima.ARIMA(train, best_params_aic)
 arima_model = arima_model.fit()
@@ -928,9 +928,9 @@ mean_absolute_error(test, y_pred)
 
 plot_prediction(pd.Series(y_pred, index=test.index), "ARIMA")
 
-##########
+##############
 # SARIMA AIC #
-##########
+##############
 
 p = d = q = range(0, 2)
 pdq = list(itertools.product(p, d, q))
@@ -954,7 +954,7 @@ def sarima_optimizer_aic(train, pdq, seasonal_pdq):
 
 best_order, best_seasonal_order = sarima_optimizer_aic(train, pdq, seasonal_pdq)
 
-# Tune Edilmiş Model
+# Tuned Model
 
 model = SARIMAX(train, order=best_order, seasonal_order=best_seasonal_order)
 sarima_final_model = model.fit(disp=0)
@@ -966,7 +966,7 @@ mean_absolute_error(test, y_pred)
 
 plot_prediction(pd.Series(y_pred, index=test.index), "SARIMA")
 
-# Çok kötü gözükmektedir. Bu optimizasyonu AIC istatistiğine göre yaptık.
+# It looks very bad. We made this optimization according to the AIC statistic.
 
 ##############
 # SARIMA MAE #
@@ -1009,4 +1009,4 @@ mean_absolute_error(test, y_pred)
 
 plot_prediction(pd.Series(y_pred, index=test.index), "SARIMA")
 
-# Holt-Winters yöntemi daha iyi çıktı.
+# The Holt-Winters method turned out better.
